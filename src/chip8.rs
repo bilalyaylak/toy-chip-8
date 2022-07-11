@@ -99,8 +99,11 @@ const FONT: [u8; 80] = [
     0b1000_0000,
 ];
 
+const MEMORY_SIZE: usize = 4096;
+pub const DISPLAY_WIDTH: usize = 64;
+pub const DISPLAY_HEIGHT: usize = 32;
 pub struct Chip8 {
-    ram: [u8; 4096],
+    ram: [u8; MEMORY_SIZE],
     pc: u16,
     v: [u8; 16],
     i: u16,
@@ -108,7 +111,7 @@ pub struct Chip8 {
     sp: u8,
     delay_timer: u8,
     sound_timer: u8,
-    pub vram: [bool; 64 * 32],
+    pub vram: [bool; DISPLAY_WIDTH * DISPLAY_HEIGHT],
     vram_changed: bool,
     keys: [bool; 16],
     duration_until_next_execute: Duration,
@@ -122,15 +125,15 @@ pub struct Chip8TickResult {
 impl Chip8 {
     pub fn new() -> Self {
         let mut chip8 = Self {
-            ram: [0; 4096],
+            ram: [0; MEMORY_SIZE],
             pc: 0x200,
             v: [0; 16],
             i: 0,
             stack: [0; 16],
-            sp: 0_u8,
+            sp: 0,
             delay_timer: 0,
             sound_timer: 0,
-            vram: [false; 64 * 32],
+            vram: [false; DISPLAY_WIDTH * DISPLAY_HEIGHT],
             vram_changed: false,
             keys: [false; 16],
             //Helpers
@@ -218,29 +221,29 @@ impl Chip8 {
             }
             // DRW Vx, Vy, nibble
             (0xD, _, _, _) => {
-                let mut y_coord = self.v[y as usize] as usize % 32;
+                let mut y_coord = self.v[y as usize] as usize % DISPLAY_HEIGHT;
                 self.v[0xF] = 0x0;
                 for row in 0..n as usize {
-                    if y_coord == 32 {
+                    if y_coord == DISPLAY_HEIGHT {
                         break;
                     }
 
-                    let mut x_coord = self.v[x as usize] as usize % 64;
+                    let mut x_coord = self.v[x as usize] as usize % DISPLAY_WIDTH;
                     let row_data = self.ram[self.i as usize + row];
 
                     for pixel in 0..8usize {
-                        if x_coord == 64 {
+                        if x_coord == DISPLAY_WIDTH {
                             break;
                         }
 
                         let sprite_pixel = ((row_data >> (7 - pixel)) & 0x1) == 0x1;
-                        let display_pixel = self.vram[y_coord * 64 + x_coord];
+                        let display_pixel = self.vram[y_coord * DISPLAY_WIDTH + x_coord];
 
                         if sprite_pixel {
                             if display_pixel {
                                 self.v[0xF] = 0x1;
                             }
-                            self.vram[y_coord * 64 + x_coord] = !display_pixel;
+                            self.vram[y_coord * DISPLAY_WIDTH + x_coord] = !display_pixel;
                             self.vram_changed = true;
                         }
                         x_coord += 1;
