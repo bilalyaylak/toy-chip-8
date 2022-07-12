@@ -381,6 +381,15 @@ impl Chip8 {
                 }
                 self.duration_until_next_execute = Duration::from_micros(73);
             }
+            // LD Vx, K
+            (0xF, _, 0x0, 0xA) => {
+                if let Some(key) = self.keys.iter().position(|pressed| *pressed) {
+                    self.v[x as usize] = key as u8;
+                } else {
+                    self.pc -= 2;
+                }
+                self.duration_until_next_execute = Duration::ZERO;
+            }
             (_, _, _, _) => panic!("Unexpected opcode"),
         }
     }
