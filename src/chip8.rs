@@ -390,6 +390,17 @@ impl Chip8 {
                 }
                 self.duration_until_next_execute = Duration::ZERO;
             }
+            // ADD I, Vx
+            (0xF, _, 0x1, 0xE) => {
+                self.i += self.v[x as usize] as u16;
+                if self.i >= 0x1000 {
+                    self.v[0xF] = 0x1;
+                    self.i &= 0x0FFF;
+                } else {
+                    self.v[0xF] = 0x0;
+                }
+                self.duration_until_next_execute = Duration::from_micros(86);
+            }
             (_, _, _, _) => panic!("Unexpected opcode"),
         }
     }
