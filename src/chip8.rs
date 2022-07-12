@@ -150,6 +150,11 @@ impl Chip8 {
         chip8
     }
 
+    pub fn change_key_state(&mut self, key: u8, pressed: bool) {
+        debug_assert!(key <= 0xF);
+        self.keys[key as usize] = pressed;
+    }
+
     pub fn load_rom(&mut self, rom_data: &[u8]) {
         if rom_data.len() > self.ram.len() - 0x200 {
             panic!("Memory size is not enough for the rom");
@@ -361,6 +366,13 @@ impl Chip8 {
                     y_coord += 1;
                 }
                 self.duration_until_next_execute = Duration::from_micros(22734);
+            }
+            // SKP Vx
+            (0xE, _, 0x9, 0xE) => {
+                if self.keys[self.v[x as usize] as usize] {
+                    self.pc += 2;
+                }
+                self.duration_until_next_execute = Duration::from_micros(73);
             }
             (_, _, _, _) => panic!("Unexpected opcode"),
         }
