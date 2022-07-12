@@ -217,6 +217,13 @@ impl Chip8 {
                 self.pc = nnn;
                 self.duration_until_next_execute = Duration::from_micros(105);
             }
+            // SE Vx, byte
+            (0x3, _, _, _) => {
+                if self.v[x as usize] == nn {
+                    self.pc += 2;
+                }
+                self.duration_until_next_execute = Duration::from_micros(55);
+            }
             // LD Vx, byte
             (0x6, _, _, _) => {
                 self.v[x as usize] = nn;
