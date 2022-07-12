@@ -199,6 +199,12 @@ impl Chip8 {
                 self.vram_changed = true;
                 self.duration_until_next_execute = Duration::from_micros(109);
             }
+            // RET
+            (0x0, 0x0, 0xE, 0xE) => {
+                self.sp -= 1;
+                self.pc = self.stack[self.sp as usize];
+                self.duration_until_next_execute = Duration::from_micros(105);
+            }
             // JP addr
             (0x1, _, _, _) => {
                 self.pc = nnn;
