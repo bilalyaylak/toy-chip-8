@@ -395,6 +395,11 @@ impl Chip8 {
                 }
                 self.duration_until_next_execute = Duration::ZERO;
             }
+            // LD DT, Vx
+            (0xF, _, 0x1, 0x5) => {
+                self.delay_timer = self.v[x as usize];
+                self.duration_until_next_execute = Duration::from_micros(45);
+            }
             // ADD I, Vx
             (0xF, _, 0x1, 0xE) => {
                 self.i += self.v[x as usize] as u16;
