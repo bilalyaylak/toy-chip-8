@@ -263,6 +263,11 @@ impl Chip8 {
                 self.v[x as usize] &= self.v[y as usize];
                 self.duration_until_next_execute = Duration::from_micros(200);
             }
+            // XOR Vx, Vy
+            (0x8, _, _, 0x3) => {
+                self.v[x as usize] ^= self.v[y as usize];
+                self.duration_until_next_execute = Duration::from_micros(200);
+            }
             // LD I, addr
             (0xA, _, _, _) => {
                 self.i = nnn;
