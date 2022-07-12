@@ -381,6 +381,11 @@ impl Chip8 {
                 }
                 self.duration_until_next_execute = Duration::from_micros(73);
             }
+            // LD Vx, DT
+            (0xF, _, 0x0, 0x7) => {
+                self.v[x as usize] = self.delay_timer;
+                self.duration_until_next_execute = Duration::from_micros(45);
+            }
             // LD Vx, K
             (0xF, _, 0x0, 0xA) => {
                 if let Some(key) = self.keys.iter().position(|pressed| *pressed) {
