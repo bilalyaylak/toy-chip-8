@@ -400,6 +400,11 @@ impl Chip8 {
                 self.delay_timer = self.v[x as usize];
                 self.duration_until_next_execute = Duration::from_micros(45);
             }
+            // LD ST, Vx
+            (0xF, _, 0x1, 0x8) => {
+                self.sound_timer = self.v[x as usize];
+                self.duration_until_next_execute = Duration::from_micros(45);
+            }
             // ADD I, Vx
             (0xF, _, 0x1, 0xE) => {
                 self.i += self.v[x as usize] as u16;
