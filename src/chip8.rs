@@ -231,6 +231,13 @@ impl Chip8 {
                 }
                 self.duration_until_next_execute = Duration::from_micros(55);
             }
+            // SE Vx, Vy
+            (0x5, _, _, 0x0) => {
+                if self.v[x as usize] == self.v[y as usize] {
+                    self.pc += 2;
+                }
+                self.duration_until_next_execute = Duration::from_micros(73);
+            }
             // LD Vx, byte
             (0x6, _, _, _) => {
                 self.v[x as usize] = nn;
