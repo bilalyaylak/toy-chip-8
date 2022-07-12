@@ -282,16 +282,19 @@ impl Chip8 {
             // OR Vx, Vy
             (0x8, _, _, 0x1) => {
                 self.v[x as usize] |= self.v[y as usize];
+                self.v[0xF] = 0x0;
                 self.duration_until_next_execute = Duration::from_micros(200);
             }
             // AND Vx, Vy
             (0x8, _, _, 0x2) => {
                 self.v[x as usize] &= self.v[y as usize];
+                self.v[0xF] = 0x0;
                 self.duration_until_next_execute = Duration::from_micros(200);
             }
             // XOR Vx, Vy
             (0x8, _, _, 0x3) => {
                 self.v[x as usize] ^= self.v[y as usize];
+                self.v[0xF] = 0x0;
                 self.duration_until_next_execute = Duration::from_micros(200);
             }
             // ADD Vx, Vy
