@@ -208,7 +208,7 @@ impl Chip8 {
             // JP addr
             (0x1, _, _, _) => {
                 self.pc = nnn;
-                self.duration_until_next_execute = Duration::from_micros(109);
+                self.duration_until_next_execute = Duration::from_micros(105);
             }
             // LD Vx, byte
             (0x6, _, _, _) => {
