@@ -374,6 +374,13 @@ impl Chip8 {
                 }
                 self.duration_until_next_execute = Duration::from_micros(73);
             }
+            // SKNP Vx
+            (0xE, _, 0xA, 0x1) => {
+                if !self.keys[self.v[x as usize] as usize] {
+                    self.pc += 2;
+                }
+                self.duration_until_next_execute = Duration::from_micros(73);
+            }
             (_, _, _, _) => panic!("Unexpected opcode"),
         }
     }
