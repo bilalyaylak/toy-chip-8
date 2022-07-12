@@ -454,7 +454,8 @@ impl Chip8 {
             // TODO: consider making this instruction configurable
             (0xF, _, 0x5, 0x5) => {
                 for i in 0..=x as usize {
-                    self.ram[self.i as usize + i] = self.v[i];
+                    self.ram[self.i as usize] = self.v[i];
+                    self.i += 1;
                 }
                 self.duration_until_next_execute = Duration::from_micros(605);
             }
@@ -462,7 +463,8 @@ impl Chip8 {
             // TODO: consider making this instruction configurable
             (0xF, _, 0x6, 0x5) => {
                 for i in 0..=x as usize {
-                    self.v[i] = self.ram[self.i as usize + i];
+                    self.v[i] = self.ram[self.i as usize];
+                    self.i += 1;
                 }
                 self.duration_until_next_execute = Duration::from_micros(605);
             }
