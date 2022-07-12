@@ -315,6 +315,11 @@ impl Chip8 {
                 self.i = nnn;
                 self.duration_until_next_execute = Duration::from_micros(55);
             }
+            // JP V0, addr
+            (0xB, _, _, _) => {
+                self.pc = nnn + self.v[0x0] as u16;
+                self.duration_until_next_execute = Duration::from_micros(105);
+            }
             // DRW Vx, Vy, nibble
             (0xD, _, _, _) => {
                 let mut y_coord = self.v[y as usize] as usize % DISPLAY_HEIGHT;
