@@ -289,6 +289,13 @@ impl Chip8 {
                 self.v[0xF] = vx & 0x1;
                 self.duration_until_next_execute = Duration::from_micros(200);
             }
+            // SUBN Vx, Vy
+            (0x8, _, _, 0x7) => {
+                let (diff, borrow) = self.v[y as usize].overflowing_sub(self.v[x as usize]);
+                self.v[x as usize] = diff;
+                self.v[0xF] = if !borrow { 0x1 } else { 0x0 };
+                self.duration_until_next_execute = Duration::from_micros(200);
+            }
             // LD I, addr
             (0xA, _, _, _) => {
                 self.i = nnn;
