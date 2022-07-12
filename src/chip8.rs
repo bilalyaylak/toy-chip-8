@@ -303,6 +303,13 @@ impl Chip8 {
                 self.v[0xF] = (vx & 0x80) >> 7;
                 self.duration_until_next_execute = Duration::from_micros(200);
             }
+            // SNE Vx, Vy
+            (0x9, _, _, 0x0) => {
+                if self.v[x as usize] != self.v[y as usize] {
+                    self.pc += 2;
+                }
+                self.duration_until_next_execute = Duration::from_micros(73);
+            }
             // LD I, addr
             (0xA, _, _, _) => {
                 self.i = nnn;
