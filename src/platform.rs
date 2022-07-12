@@ -1,4 +1,3 @@
-use std::time::Duration;
 use std::{fs::File, io::Read, time::Instant};
 
 use sdl2::event::Event;

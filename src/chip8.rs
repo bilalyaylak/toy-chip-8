@@ -1,5 +1,7 @@
 use std::time::Duration;
 
+use rand::{prelude::ThreadRng, Rng};
+
 const FONT: [u8; 80] = [
     //0
     0b1111_0000,
@@ -115,6 +117,7 @@ pub struct Chip8 {
     vram_changed: bool,
     keys: [bool; 16],
     duration_until_next_execute: Duration,
+    rng: ThreadRng,
 }
 
 pub struct Chip8TickResult {
@@ -138,6 +141,7 @@ impl Chip8 {
             keys: [false; 16],
             //Helpers
             duration_until_next_execute: Duration::ZERO,
+            rng: rand::thread_rng(),
         };
 
         //Load font
@@ -319,6 +323,11 @@ impl Chip8 {
             (0xB, _, _, _) => {
                 self.pc = nnn + self.v[0x0] as u16;
                 self.duration_until_next_execute = Duration::from_micros(105);
+            }
+            // RND Vx, byte
+            (0xC, _, _, _) => {
+                self.v[x as usize] = self.rng.gen::<u8>() & nn;
+                self.duration_until_next_execute = Duration::from_micros(164);
             }
             // DRW Vx, Vy, nibble
             (0xD, _, _, _) => {
