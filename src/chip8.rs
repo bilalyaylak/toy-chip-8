@@ -415,6 +415,14 @@ impl Chip8 {
                 }
                 self.duration_until_next_execute = Duration::from_micros(927);
             }
+            // LD [I], Vx
+            // TODO: consider making this instruction configurable
+            (0xF, _, 0x5, 0x5) => {
+                for i in 0..=x as usize {
+                    self.ram[self.i as usize + i] = self.v[i];
+                }
+                self.duration_until_next_execute = Duration::from_micros(605);
+            }
             (_, _, _, _) => panic!("Unexpected opcode"),
         }
     }
