@@ -210,6 +210,13 @@ impl Chip8 {
                 self.pc = nnn;
                 self.duration_until_next_execute = Duration::from_micros(105);
             }
+            // CALL addr
+            (0x2, _, _, _) => {
+                self.stack[self.sp as usize] = self.pc;
+                self.sp += 1;
+                self.pc = nnn;
+                self.duration_until_next_execute = Duration::from_micros(105);
+            }
             // LD Vx, byte
             (0x6, _, _, _) => {
                 self.v[x as usize] = nn;
