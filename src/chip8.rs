@@ -268,6 +268,13 @@ impl Chip8 {
                 self.v[x as usize] ^= self.v[y as usize];
                 self.duration_until_next_execute = Duration::from_micros(200);
             }
+            // ADD Vx, Vy
+            (0x8, _, _, 0x4) => {
+                let (sum, carry) = self.v[x as usize].overflowing_add(self.v[y as usize]);
+                self.v[x as usize] = sum;
+                self.v[0xF] = if carry { 0x1 } else { 0x0 };
+                self.duration_until_next_execute = Duration::from_micros(200);
+            }
             // LD I, addr
             (0xA, _, _, _) => {
                 self.i = nnn;
