@@ -117,6 +117,7 @@ pub struct Chip8 {
     vram_changed: bool,
     keys: [bool; 16],
     duration_until_next_execute: Duration,
+    duration_until_next_timer_interrupt: Duration,
     rng: ThreadRng,
 }
 
@@ -141,6 +142,7 @@ impl Chip8 {
             keys: [false; 16],
             //Helpers
             duration_until_next_execute: Duration::ZERO,
+            duration_until_next_timer_interrupt: Duration::ZERO,
             rng: rand::thread_rng(),
         };
 
@@ -164,7 +166,7 @@ impl Chip8 {
 
     pub fn tick(&mut self, delta_time: Duration) -> Chip8TickResult {
         let mut vram_changed = false;
-        let beep = false;
+        let mut beep = false;
 
         self.duration_until_next_execute =
             self.duration_until_next_execute.saturating_sub(delta_time);
@@ -176,6 +178,21 @@ impl Chip8 {
             if self.vram_changed {
                 vram_changed = true;
                 self.vram_changed = false;
+            }
+        }
+
+        self.duration_until_next_timer_interrupt = self
+            .duration_until_next_timer_interrupt
+            .saturating_sub(delta_time);
+
+        if self.duration_until_next_timer_interrupt.is_zero() {
+            self.duration_until_next_timer_interrupt = Duration::from_micros(16666);
+            if self.delay_timer > 0 {
+                self.delay_timer -= 1;
+            }
+            if self.sound_timer > 0 {
+                beep = true;
+                self.sound_timer -= 1;
             }
         }
 
