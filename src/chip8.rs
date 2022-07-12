@@ -406,6 +406,15 @@ impl Chip8 {
                 self.i = (self.v[x as usize] & 0x0F) as u16 * 5;
                 self.duration_until_next_execute = Duration::from_micros(91);
             }
+            // LD B, Vx
+            (0xF, _, 0x3, 0x3) => {
+                let mut vx = self.v[x as usize];
+                for digit in (0..=2usize).rev() {
+                    self.ram[self.i as usize + digit] = vx % 10;
+                    vx /= 10;
+                }
+                self.duration_until_next_execute = Duration::from_micros(927);
+            }
             (_, _, _, _) => panic!("Unexpected opcode"),
         }
     }
