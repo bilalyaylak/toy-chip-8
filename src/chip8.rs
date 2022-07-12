@@ -401,6 +401,11 @@ impl Chip8 {
                 }
                 self.duration_until_next_execute = Duration::from_micros(86);
             }
+            // LD F, Vx
+            (0xF, _, 0x2, 0x9) => {
+                self.i = (self.v[x as usize] & 0x0F) as u16 * 5;
+                self.duration_until_next_execute = Duration::from_micros(91);
+            }
             (_, _, _, _) => panic!("Unexpected opcode"),
         }
     }
