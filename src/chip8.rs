@@ -313,9 +313,9 @@ impl Chip8 {
             }
             // SHR Vx {, Vy}
             (0x8, _, _, 0x6) => {
-                let vx = self.v[x as usize];
-                self.v[x as usize] = vx >> 1;
-                self.v[0xF] = vx & 0x1;
+                let vy = self.v[y as usize];
+                self.v[x as usize] = vy >> 1;
+                self.v[0xF] = vy & 0x1;
                 self.duration_until_next_execute = Duration::from_micros(200);
             }
             // SUBN Vx, Vy
@@ -327,9 +327,9 @@ impl Chip8 {
             }
             // SHL Vx {, Vy}
             (0x8, _, _, 0xE) => {
-                let vx = self.v[x as usize];
-                self.v[x as usize] = vx << 1;
-                self.v[0xF] = (vx & 0x80) >> 7;
+                let vy = self.v[y as usize];
+                self.v[x as usize] = vy << 1;
+                self.v[0xF] = (vy & 0x80) >> 7;
                 self.duration_until_next_execute = Duration::from_micros(200);
             }
             // SNE Vx, Vy
