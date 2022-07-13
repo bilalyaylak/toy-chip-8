@@ -5,26 +5,32 @@ use sdl2::keyboard::Keycode;
 use sdl2::EventPump;
 
 use crate::chip8::Chip8;
+use crate::config::Config;
 use crate::display_device::DisplayDevice;
 
 pub struct Platform {
     chip8: Chip8,
     display_device: DisplayDevice,
     event_pump: EventPump,
-    rom_loaded: bool,
     previous_tick: Instant,
 }
 
 impl Platform {
-    pub fn new() -> Self {
+    pub fn new(config: Config) -> Self {
         let sdl_context = sdl2::init().unwrap();
-        Platform {
+
+        let mut platform = Self {
             chip8: Chip8::new(),
-            display_device: DisplayDevice::new(&sdl_context),
+            display_device: DisplayDevice::new(
+                &sdl_context,
+                config.background_color,
+                config.sprite_color,
+            ),
             event_pump: sdl_context.event_pump().unwrap(),
-            rom_loaded: false,
             previous_tick: Instant::now(),
-        }
+        };
+        platform.load_rom(&config.rom_path);
+        platform
     }
 
     pub fn load_rom(&mut self, rom_path: &String) {
@@ -33,14 +39,9 @@ impl Platform {
         rom_file.read_to_end(&mut rom_data).unwrap();
 
         self.chip8.load_rom(&rom_data);
-        self.rom_loaded = true;
     }
 
     pub fn start(&mut self) {
-        if !self.rom_loaded {
-            panic!("No rom loaded!");
-        }
-
         self.previous_tick = Instant::now();
 
         'mainloop: loop {

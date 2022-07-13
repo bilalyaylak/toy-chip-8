@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 sdl2 = "0.35.2"
 rand = "0.8.5"
+clap = { version = "3.2.11", features = ["derive"] }
